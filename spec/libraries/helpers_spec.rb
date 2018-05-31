@@ -78,4 +78,31 @@ RSpec.describe PostgresqlCookbook::Helpers do
       end
     end
   end
+
+  describe '#psql_command_string' do
+    # before do
+    #
+    # end
+
+    it 'returns a full command string' do
+      new_resource = double(database: 'db_foo',
+                             user: 'postgres',
+                             host: 'localhost',
+                             port: '5432'
+                            )
+      query = 'THIS IS A COMMAND STRING'
+      grep_for = 'FOO'
+      # database = 'db_foo'
+
+      result = 'psql -tc THIS IS A COMMAND STRING -d db_foo -U postgres --host localhost --port 5432 | grep FOO'
+
+      expect(subject.psql_command_string(new_resource, query, grep_for, 'db_foo')).to eq(result)
+    end
+  end
+
+  # describe '#database_exists(new_resource)' do
+  #   before do
+  #
+  #   end
+  # end
 end
