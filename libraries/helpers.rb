@@ -21,13 +21,14 @@ module PostgresqlCookbook
 
     require 'securerandom'
 
-    def psql_command_string(new_resource, query, grep_for, db = nil)
-      cmd = "psql -tc #{query}"
-      cmd << " -d #{new_resource.database}" if db
+    def psql_command_string(new_resource, query, grep_for = nil)
+      cmd = "psql -tc '#{query}'"
+      cmd << " -d #{new_resource.database}" if new_resource.database
       cmd << " -U #{new_resource.user}"     if new_resource.user
       cmd << " --host #{new_resource.host}" if new_resource.host
       cmd << " --port #{new_resource.port}" if new_resource.port
       cmd << " | grep #{grep_for}"          if grep_for
+      cmd
     end
 
     #######
@@ -65,7 +66,7 @@ module PostgresqlCookbook
     def database_exists?(new_resource)
       sql = %(SELECT datname from pg_database WHERE datname='#{new_resource.database}')
 
-      exists = psql_command_string(new_resource, sql, new_resource.database, nil)
+      exists = psql_command_string(new_resource, sql)
 
       cmd = shell_out(exists, user: 'postgresql')
       cmd.run_command
