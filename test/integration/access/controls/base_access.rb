@@ -1,8 +1,6 @@
 control 'postgresl-local-access' do
   impact 1.0
-  desc '
-    This test ensures postgres has localhost access to the database
-  '
+  desc 'This test ensures postgres has localhost access to the database'
 
   describe postgres_hba_conf.where { type == 'host' && user == 'postgres' } do
     its('database') { should cmp 'all' }
@@ -20,9 +18,7 @@ end
 
 control 'postgresl-sous-chef-access' do
   impact 1.0
-  desc '
-    This test ensures sous_chefs have local trust access to the database
-  '
+  desc 'This test ensures sous_chefs have local trust access to the database'
 
   describe postgres_hba_conf.where { user == 'sous_chef' } do
     its('database') { should cmp 'all' }

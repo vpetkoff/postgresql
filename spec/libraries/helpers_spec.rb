@@ -123,4 +123,25 @@ RSpec.describe PostgresqlCookbook::Helpers do
       expect(subject.psql_command_string(res, db_query, grep_for.to_s)).to eq(result)
     end
   end
+
+  describe '#role_sql' do
+    before do
+      @new_resource = double(
+        user: 'sous_chef',
+        superuser: true,
+        createdb: true,
+        createrole: true,
+        inherit: false,
+        replication: true,
+        login: true,
+        encrypted_password: nil,
+        password: '67890',
+        valid_until: nil
+      )
+    end
+    it 'Should return a correctly formatted role creation string' do
+      result = "\\\"sous_chef\\\" WITH SUPERUSER CREATEDB CREATEROLE NOINHERIT REPLICATION LOGIN PASSWORD '67890'"
+      expect(subject.role_sql(@new_resource)).to eq result
+    end
+  end
 end
