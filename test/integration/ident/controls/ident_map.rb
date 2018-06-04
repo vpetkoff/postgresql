@@ -21,6 +21,6 @@ control 'shef and postgres roles should exist' do
 
   describe postgres_access.query('SELECT rolname FROM pg_roles;') do
     its('output') { should eq 'postgres' }
-    its('output') { should eq 'shef' }
+    its('output') { should eq 'sous_chef' }
   end
 end

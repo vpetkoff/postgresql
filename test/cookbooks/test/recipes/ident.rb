@@ -7,13 +7,6 @@ end
 
 user 'shef'
 
-postgresql_ident 'shef mapping' do
-  mapname 'testmap'
-  system_user 'shef'
-  pg_user 'sous_chef'
-  notifies :reload, 'service[postgresql]'
-end
-
 postgresql_ident 'postgresl mapping' do
   mapname 'testmap'
   system_user 'postgres'
@@ -21,10 +14,11 @@ postgresql_ident 'postgresl mapping' do
   notifies :reload, 'service[postgresql]'
 end
 
-postgresql_user 'sous_chef test user' do
-  user 'sous_chef'
-  superuser true
-  password '67890'
+postgresql_ident 'shef mapping' do
+  mapname 'testmap'
+  system_user 'shef'
+  pg_user 'sous_chef'
+  notifies :reload, 'service[postgresql]'
 end
 
 postgresql_access 'postgresql host superuser' do
@@ -43,6 +37,12 @@ postgresql_access 'shef mapping' do
   access_method 'peer map=testmap'
   cookbook 'test'
   notifies :reload, 'service[postgresql]'
+end
+
+postgresql_user 'sous_chef' do
+  superuser true
+  password '67890'
+  sensitive false
 end
 
 service 'postgresql' do

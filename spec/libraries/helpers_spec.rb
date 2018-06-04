@@ -122,6 +122,19 @@ RSpec.describe PostgresqlCookbook::Helpers do
 
       expect(subject.psql_command_string(res, db_query, grep_for.to_s)).to eq(result)
     end
+
+    it 'Allows new_resource.database to be nil or not set' do
+      new_resource = double(database: nil,
+                            user: 'postgres',
+                            port: '5432',
+                            host: '127.0.0.1'
+                           )
+      db_query = 'SELECT datname from pg_database WHERE datname=\'test_1234\''
+      result = "psql -tc 'SELECT datname from pg_database WHERE datname='test_1234'' -U postgres --host 127.0.0.1 --port 5432"
+
+      expect(subject.psql_command_string(new_resource, db_query)).to eq(result)
+    end
+
   end
 
   describe '#role_sql' do
