@@ -5,6 +5,8 @@ postgresql_server_install 'postgresql' do
   action [:install, :create]
 end
 
+user 'shef'
+
 postgresql_ident 'shef mapping' do
   mapname 'testmap'
   system_user 'shef'
@@ -42,8 +44,6 @@ postgresql_access 'shef mapping' do
   cookbook 'test'
   notifies :reload, 'service[postgresql]'
 end
-
-user 'shef'
 
 service 'postgresql' do
   extend PostgresqlCookbook::Helpers

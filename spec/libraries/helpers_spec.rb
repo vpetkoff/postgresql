@@ -140,7 +140,7 @@ RSpec.describe PostgresqlCookbook::Helpers do
       )
     end
     it 'Should return a correctly formatted role creation string' do
-      result = "\\\"sous_chef\\\" WITH SUPERUSER CREATEDB CREATEROLE NOINHERIT REPLICATION LOGIN PASSWORD '67890'"
+      result = "sous_chef WITH SUPERUSER CREATEDB CREATEROLE NOINHERIT REPLICATION LOGIN PASSWORD '67890'"
       expect(subject.role_sql(@new_resource)).to eq result
     end
   end
