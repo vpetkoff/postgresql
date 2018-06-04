@@ -22,7 +22,7 @@ module PostgresqlCookbook
     require 'securerandom'
 
     def psql_command_string(new_resource, query, grep_for = nil)
-      cmd = "psql -tc '#{query}'"
+      cmd = "psql -tc \"#{query}\""
       cmd << " -d #{new_resource.database}" if new_resource.database
       cmd << " -U #{new_resource.user}"     if new_resource.user
       cmd << " --host #{new_resource.host}" if new_resource.host
@@ -44,13 +44,13 @@ module PostgresqlCookbook
       # If psql fails, generally the postgresql service is down.
       # Instead of aborting chef with a fatal error, let's just
       # pass these non-zero exitstatus back as empty cmd.stdout.
-      if cmd.exitstatus == 0 && !cmd.error?
-        # An SQL failure is still a zero exitstatus, but then the
-        # stderr explains the error, so let's raise that as fatal.
-        Chef::Log.fatal("psql failed executing this SQL statement:\n#{statement}")
-        Chef::Log.fatal(cmd.stderr)
-        raise 'SQL ERROR'
-      end
+      # if cmd.exitstatus == 0 && !cmd.error?
+      #   # An SQL failure is still a zero exitstatus, but then the
+      #   # stderr explains the error, so let's raise that as fatal.
+      #   Chef::Log.fatal("psql failed executing this SQL statement:\n#{statement}")
+      #   Chef::Log.fatal(cmd.stderr)
+      #   raise 'SQL ERROR'
+      # end
 
       # Pass back cmd so we can decide what to do with it in the calling method.
       cmd
@@ -74,10 +74,12 @@ module PostgresqlCookbook
     end
 
     def user_exists?(new_resource)
-      sql = %(SELECT rolname FROM pg_roles WHERE rolname="#{new_resource.create_user}")
+      sql = %(SELECT rolname FROM pg_roles WHERE rolname='#{new_resource.create_user}')
 
       exists = psql_command_string(new_resource, sql, new_resource.create_user)
 
+puts "DEBUG"
+puts exists
       cmd = execute_sql(new_resource, exists)
       cmd.exitstatus == 0
     end
