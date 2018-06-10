@@ -36,7 +36,7 @@ module PostgresqlCookbook
       # default to the postgres user
       user = new_resource.user ? new_resource.user : 'postgres'
 
-      # query could be a String or an Array of Strings
+      # Query could be a String or an Array of Strings
       statement = query.is_a?(String) ? query : query.join("\n")
 
       cmd = shell_out(statement, user: user)
@@ -78,8 +78,6 @@ module PostgresqlCookbook
 
       exists = psql_command_string(new_resource, sql, new_resource.create_user)
 
-puts "DEBUG"
-puts exists
       cmd = execute_sql(new_resource, exists)
       cmd.exitstatus == 0
     end
@@ -182,25 +180,25 @@ puts exists
       end
     end
 
-    # given the base URL build the complete URL string for a yum repo
+    # Given the base URL build the complete URL string for a yum repo
     def yum_repo_url(base_url)
       "#{base_url}/#{new_resource.version}/#{yum_repo_platform_family_string}/#{yum_repo_platform_string}"
     end
 
-    # the postgresql yum repos URLs are organized into redhat and fedora directories.s
+    # The postgresql yum repos URLs are organized into redhat and fedora directories.s
     # route things to the right place based on platform_family
     def yum_repo_platform_family_string
       platform_family?('fedora') ? 'fedora' : 'redhat'
     end
 
-    # build the platform string that makes up the final component of the yum repo URL
+    # Build the platform string that makes up the final component of the yum repo URL
     def yum_repo_platform_string
       platform = platform?('fedora') ? 'fedora' : 'rhel'
       release = platform?('amazon') ? '6' : '$releasever'
       "#{platform}-#{release}-$basearch"
     end
 
-    # on amazon use the RHEL 6 packages. Otherwise use the releasever yum variable
+    # On Amazon use the RHEL 6 packages. Otherwise use the releasever yum variable
     def yum_releasever
       platform?('amazon') ? '6' : '$releasever'
     end
