@@ -19,7 +19,6 @@ property :template, String, default: 'template1'
 property :encoding, String, default: 'UTF-8'
 property :locale,   String, default: 'en_US.UTF-8'
 property :owner,    String
-property :version, String, default: '9.6'
 
 # Connection prefernces
 property :user,     String, default: 'postgres'

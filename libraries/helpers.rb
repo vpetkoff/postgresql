@@ -140,9 +140,7 @@ module PostgresqlCookbook
       psql_command_string(new_resource, sql)
     end
 
-    def data_dir(new_resource)
-      version = new_resource.version
-
+    def data_dir(version = node.run_state['postgresql']['version'])
       case node['platform_family']
       when 'rhel', 'fedora'
         "/var/lib/pgsql/#{version}/data"
@@ -157,9 +155,7 @@ module PostgresqlCookbook
       end
     end
 
-    def conf_dir(new_resource)
-      version = new_resource.version
-
+    def conf_dir(version = node.run_state['postgresql']['version'])
       case node['platform_family']
       when 'rhel', 'fedora'
         "/var/lib/pgsql/#{version}/data"
@@ -175,8 +171,7 @@ module PostgresqlCookbook
     end
 
     # determine the platform specific service name
-    def platform_service_name(res = new_resource)
-      version = res.version
+    def platform_service_name(version = node.run_state['postgresql']['version'])
       case node['platform_family']
       when 'rhel', 'fedora'
         "postgresql-#{version}"
@@ -191,12 +186,12 @@ module PostgresqlCookbook
       end
     end
 
-    def slave?(new_resource)
-      ::File.exist? "#{data_dir(new_resource)}/recovery.conf"
+    def slave?
+      ::File.exist? "#{data_dir}/recovery.conf"
     end
 
-    def initialized?(new_resource)
-      return true if ::File.exist?("#{conf_dir(new_resource)}/PG_VERSION")
+    def initialized?
+      return true if ::File.exist?("#{conf_dir}/PG_VERSION")
       false
     end
 
@@ -212,11 +207,11 @@ module PostgresqlCookbook
     end
 
     # determine the appropriate DB init command to run based on RHEL/Fedora/Amazon release
-    def rhel_init_db_command(new_resource)
+    def rhel_init_db_command
       if platform_family?('fedora') || (platform_family?('rhel') && node['platform_version'].to_i >= 7)
         "/usr/pgsql-#{new_resource.version}/bin/postgresql#{new_resource.version.delete('.')}-setup initdb"
       else
-        "service #{platform_service_name(new_resource)} initdb"
+        "service #{platform_service_name} initdb"
       end
     end
 

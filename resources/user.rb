@@ -27,7 +27,6 @@ property :encrypted_password, String
 property :valid_until,        String
 property :attributes,         Hash, default: {}
 property :sensitive,          [true, false], default: true
-property :version,            String, default: '9.6'
 
 # Connection prefernces
 property :user,     String, default: 'postgres'
@@ -42,7 +41,7 @@ action :create do
     user 'postgres'
     command create_user_sql(new_resource)
     sensitive new_resource.sensitive
-    not_if { slave?(new_resource) }
+    not_if { slave? }
     not_if { user_exists?(new_resource) }
   end
 end

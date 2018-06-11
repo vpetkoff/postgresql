@@ -34,6 +34,9 @@ property :host,     String
 property :port,     Integer, default: 5432
 
 action :install do
+  node.run_state['postgresql'] ||= {}
+  node.run_state['postgresql']['version'] = new_resource.version
+
   postgresql_client_install 'Install PostgreSQL Client' do
     version new_resource.version
     setup_repo new_resource.setup_repo
@@ -44,14 +47,14 @@ end
 
 action :create do
   execute 'init_db' do
-    command rhel_init_db_command(new_resource)
-    not_if { initialized?(new_resource) }
+    command rhel_init_db_command
+    not_if { initialized? }
     only_if { platform_family?('rhel', 'fedora', 'amazon') }
     notifies :write, 'log[Enable and start PostgreSQL service]', :immediately
   end
 
   find_resource(:service, 'postgresql') do
-    service_name lazy { platform_service_name(new_resource) }
+    service_name lazy { platform_service_name }
     supports restart: true, status: true, reload: true
     action :nothing
   end
