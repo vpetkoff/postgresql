@@ -18,6 +18,7 @@
 
 property :extension,   String, name_property: true
 property :old_version, String
+property :version      String, default: '9.6'
 
 # Connection prefernces
 property :user,     String, default: 'postgres'

@@ -121,7 +121,7 @@ module PostgresqlCookbook
     end
 
     def create_user_sql(new_resource)
-      query = %(psql -c "CREATE ROLE #{role_sql(new_resource)}")
+      sql = %(psql -c "CREATE ROLE #{role_sql(new_resource)}")
       psql_command_string(new_resource, sql)
     end
 
@@ -140,7 +140,9 @@ module PostgresqlCookbook
       psql_command_string(new_resource, sql)
     end
 
-    def data_dir(version = node.run_state['postgresql']['version'])
+    def data_dir(new_resource)
+      version = new_resource.version
+
       case node['platform_family']
       when 'rhel', 'fedora'
         "/var/lib/pgsql/#{version}/data"
@@ -155,7 +157,9 @@ module PostgresqlCookbook
       end
     end
 
-    def conf_dir(version = node.run_state['postgresql']['version'])
+    def conf_dir(new_resource)
+      version = new_resource.version
+
       case node['platform_family']
       when 'rhel', 'fedora'
         "/var/lib/pgsql/#{version}/data"
@@ -171,7 +175,8 @@ module PostgresqlCookbook
     end
 
     # determine the platform specific service name
-    def platform_service_name(version = node.run_state['postgresql']['version'])
+    def platform_service_name(bew_resource)
+      version = new_resource.version
       case node['platform_family']
       when 'rhel', 'fedora'
         "postgresql-#{version}"
@@ -186,12 +191,12 @@ module PostgresqlCookbook
       end
     end
 
-    def slave?
-      ::File.exist? "#{data_dir}/recovery.conf"
+    def slave?(new_resource)
+      ::File.exist? "#{data_dir(new_resource)}/recovery.conf"
     end
 
-    def initialized?
-      return true if ::File.exist?("#{conf_dir}/PG_VERSION")
+    def initialized?(new_resource)
+      return true if ::File.exist?("#{conf_dir(new_resource)}/PG_VERSION")
       false
     end
 

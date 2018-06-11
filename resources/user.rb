@@ -27,6 +27,7 @@ property :encrypted_password, String
 property :valid_until,        String
 property :attributes,         Hash, default: {}
 property :sensitive,          [true, false], default: true
+property :version             String, default: '9.6'
 
 # Connection prefernces
 property :user,     String, default: 'postgres'
