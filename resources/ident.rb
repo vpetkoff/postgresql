@@ -22,11 +22,12 @@ property :cookbook,    String, default: 'postgresql'
 property :system_user, String, required: true
 property :pg_user,     String, required: true
 property :comment,     [String, nil], default: nil
+property :version,     String, default: '9.6'
 
 action :create do
   ident_resource = new_resource
   with_run_context :root do # ~FC037
-    edit_resource(:template, "#{conf_dir}/pg_ident.conf") do |new_resource|
+    edit_resource(:template, "#{conf_dir(new_resource)}/pg_ident.conf") do |new_resource|
       source new_resource.source
       cookbook new_resource.cookbook
       owner 'postgres'

@@ -42,7 +42,7 @@ action :create do
     user 'postgres'
     command create_user_sql(new_resource)
     sensitive new_resource.sensitive
-    not_if { slave? }
+    not_if { slave?(new_resource) }
     not_if { user_exists?(new_resource) }
   end
 end

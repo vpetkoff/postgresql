@@ -44,14 +44,14 @@ end
 
 action :create do
   execute 'init_db' do
-    command rhel_init_db_command
+    command rhel_init_db_command(new_resource)
     not_if { initialized?(new_resource) }
     only_if { platform_family?('rhel', 'fedora', 'amazon') }
     notifies :write, 'log[Enable and start PostgreSQL service]', :immediately
   end
 
   find_resource(:service, 'postgresql') do
-    service_name lazy { platform_service_name }
+    service_name lazy { platform_service_name(new_resource) }
     supports restart: true, status: true, reload: true
     action :nothing
   end
