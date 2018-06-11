@@ -130,8 +130,8 @@ module PostgresqlCookbook
       psql_command_string(new_resource, sql)
     end
 
-    def update_user_with_attributes_sql(new_resource)
-      sql = %(psql -c "ALTER ROLE \\\"#{new_resource.create_user}\\\" SET #{attr} = #{v};")
+    def update_user_with_attributes_sql(new_resource, value)
+      sql = %(psql -c "ALTER ROLE \\\"#{new_resource.create_user}\\\" SET #{attr} = #{value};")
       psql_command_string(new_resource, sql)
     end
 
@@ -175,7 +175,7 @@ module PostgresqlCookbook
     end
 
     # determine the platform specific service name
-    def platform_service_name(bew_resource)
+    def platform_service_name(new_resource)
       version = new_resource.version
       case node['platform_family']
       when 'rhel', 'fedora'
