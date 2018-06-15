@@ -1,9 +1,6 @@
 postgresql_repository 'install'
 
 postgresql_server_install 'package' do
-  password '12345'
-  port 5432
-  setup_repo true
   action [:install, :create]
 end
 
